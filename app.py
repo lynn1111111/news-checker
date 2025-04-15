@@ -3,7 +3,7 @@ from transformers import pipeline
 
 app = Flask(__name__)
 
-# ✅ 경량 모델로 교체 (무료 서버 메모리 초과 방지)
+# ✅ 경량 zero-shot 모델로 메모리 초과 방지
 classifier = pipeline(
     "zero-shot-classification",
     model="valhalla/distilbart-mnli-12-1"
@@ -12,7 +12,7 @@ classifier = pipeline(
 # 정치 성향 라벨
 labels = ["보수", "중도", "진보"]
 
-# 근거 문장 추출 함수
+# ✅ 근거 문장 추출 (label 하나만 분석해서 메모리 아낌)
 def find_reason_sentence(text, predicted_label):
     sentences = text.split('다.')
     best_sentence = None
@@ -22,19 +22,24 @@ def find_reason_sentence(text, predicted_label):
         sentence = sentence.strip()
         if not sentence:
             continue
-        result = classifier(sentence + "다.", candidate_labels=labels)
-        for label, score in zip(result['labels'], result['scores']):
-            if label == predicted_label and score > best_score:
+
+        try:
+            result = classifier(sentence + "다.", candidate_labels=[predicted_label])
+            score = result['scores'][0]  # 단일 label이므로 index 0
+            if score > best_score:
                 best_score = score
                 best_sentence = sentence + "다."
+        except:
+            continue
+
     return best_sentence if best_sentence else "모델이 판단한 전체 본문 기준 결과입니다."
 
-# 홈 화면
+# 홈 페이지
 @app.route('/')
 def index():
     return render_template('index.html')
 
-# 분석 요청 처리
+# 분석 처리
 @app.route('/analyze', methods=['POST'])
 def analyze():
     text = request.form['article']
