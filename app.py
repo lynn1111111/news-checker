@@ -6,7 +6,7 @@ app = Flask(__name__)
 
 # Hugging Face API 설정
 API_URL = "https://api-inference.huggingface.co/models/facebook/bart-large-mnli"
-HF_TOKEN = os.getenv("HF_API_TOKEN")
+HF_TOKEN = os.getenv("HF_TOKEN")
 HEADERS = {"Authorization": f"Bearer {HF_TOKEN}"}
 
 LABELS = ["보수", "중도", "진보"]
