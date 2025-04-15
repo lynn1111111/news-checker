@@ -1,14 +1,17 @@
 <!DOCTYPE html>
-<html>
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <title>분석 결과</title>
 </head>
 <body>
-    <h1>분석 결과</h1>
-    <p><strong>정치 성향:</strong> {{ final_label }}</p>
-    <p><strong>자신감:</strong> {{ confidence }}%</p>
-    <p><strong>근거 문장:</strong> {{ reason_sentence }}</p>
+    <h1>정치 성향 분석 결과</h1>
+    <p><strong>입력한 기사:</strong></p>
+    <p>{{ article }}</p>
+    <hr>
+    <p><strong>예측된 정치 성향:</strong> {{ label }}</p>
+    <p><strong>신뢰도:</strong> {{ score }}%</p>
+    <br>
     <a href="/">다시 분석하기</a>
 </body>
 </html>
